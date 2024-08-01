@@ -6,6 +6,7 @@ import corsMiddleware from "./middlewares/cors";
 //Routes
 import customerRoutes from "./routes/customer.routes";
 import shippingAddressRoutes from "./routes/shippingAddress.routes";
+import productRoutes from "./routes/products.routes";
 
 const app: Application = express();
 app.set("port", config.port);
@@ -32,5 +33,6 @@ app.get(`${apiVersion}/`, (_req, res) => {
 
 app.use(`${apiVersion}/customers`, customerRoutes);
 app.use(`${apiVersion}/shipping-addresses`, shippingAddressRoutes);
+app.use(`${apiVersion}/products`, productRoutes);
 
 export default app;

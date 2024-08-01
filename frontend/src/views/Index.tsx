@@ -1,17 +1,19 @@
-import { useEffect } from "react";
+import type { ChangeEvent } from "react";
+import TableProducts from "../components/TableProducts";
 import { useAppStore } from "../stores/useAppStore";
 
 const Index = () => {
-  const fetchCustomers = useAppStore((state) => state.fetchCustomers);
   const customers = useAppStore((state) => state.customers);
-  const selectCustomer = useAppStore((state) => state.selectCustomer);
-  const selectedShippingAddresses = useAppStore(
-    (state) => state.selectedShippingAddresses
+  const products = useAppStore((state) => state.products);
+  const fetchShippingAddresses = useAppStore(
+    (state) => state.fetchShippingAddresses
   );
+  const shippingAddresses = useAppStore((state) => state.shippingAddresses);
 
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
+  const handleCustomerChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const customerId = Number(event.target.value);
+    fetchShippingAddresses(customerId);
+  };
 
   return (
     <>
@@ -30,7 +32,7 @@ const Index = () => {
             id="customer"
             name="customer"
             className="px-4 py-2 transition-all rounded-lg ring-1 ring-zinc-300 focus:outline-none focus:ring-4 focus:ring-offset-1 focus:ring-purple-400 focus:ring-offset-purple-500 placeholder:text-zinc-400"
-            onChange={(e) => selectCustomer(Number(e.target.value))}
+            onChange={handleCustomerChange}
           >
             <option hidden>Selecciona una opción</option>
             {customers.map((customer) => (
@@ -51,24 +53,23 @@ const Index = () => {
             id="deliveryAddress"
             name="deliveryAddress"
             className="px-4 py-2 transition-all rounded-lg ring-1 ring-zinc-300 focus:outline-none focus:ring-4 focus:ring-offset-1 focus:ring-purple-400 focus:ring-offset-purple-500 placeholder:text-zinc-400 disabled:bg-zinc-300 disabled:text-zinc-500 disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={selectedShippingAddresses.length === 0}
+            disabled={shippingAddresses.length === 0}
           >
             <option hidden>Selecciona una opción</option>
-            {selectedShippingAddresses.map((address) => (
-              <option key={address.id} value={address.id}>
-                {address.NameShort} - {address.address}
-              </option>
-            ))}
+            {shippingAddresses.length === 0 ? (
+              <option hidden>No hay direcciones de envio</option>
+            ) : (
+              shippingAddresses.map((shippingAddress) => (
+                <option key={shippingAddress.id} value={shippingAddress.id}>
+                  {shippingAddress.address}
+                </option>
+              ))
+            )}
           </select>
         </div>
       </div>
       <div className="p-6 border rounded-md bg-zinc-50">
-        <label
-          htmlFor="products"
-          className="inline-block mb-3 text-xl font-bold"
-        >
-          Productos
-        </label>
+        <TableProducts products={products} />
       </div>
     </>
   );

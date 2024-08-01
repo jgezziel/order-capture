@@ -1,13 +1,8 @@
-import { useEffect } from "react";
 import { useAppStore } from "../stores/useAppStore";
 
 const Customers = () => {
-  const fetchCustomers = useAppStore((state) => state.fetchCustomers);
   const customers = useAppStore((state) => state.customers);
 
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
   return (
     <>
       <div className="pb-3 mb-6 border-b border-zinc-200">

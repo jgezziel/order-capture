@@ -57,16 +57,11 @@ export const ShippingAddressController = {
       });
     }
 
-    const customerAndShippingAddresses = {
-      customer: customer,
-      shippingAddresses: customerShippingAddresses,
-    };
-
     return res.json({
       status: "success",
       code: 200,
       message: "Shipping Addresses retrieved",
-      data: customerAndShippingAddresses,
+      data: customerShippingAddresses,
     });
   },
 };

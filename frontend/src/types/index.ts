@@ -1,33 +1,12 @@
-export type Customer = {
-  id: number;
-  name: string;
-  rfc: string;
-  fiscalAddress: string;
-  email: string;
-  phone: string;
-  contact: string;
-  status: string;
-};
+import type { z } from "zod";
 
-export type ShippingAddress = {
-  id: number;
-  customerId: number;
-  NameShort: string;
-  address: string;
-  postalCode: string;
-  phone: string;
-  contact: string;
-  status: string;
-};
+import type { Customer as CustomerShcema } from "../schemas/customer-schema";
+import type { Product as ProductSchema } from "../schemas/product-schema";
+import type { ShippingAddress as ShippingAddressSchema } from "../schemas/shipping-address-schema";
 
-export type Product = {
-  id: number;
-  sku: string;
-  description: string;
-  measurementUnit: string;
-  price: number;
-  status: string;
-};
+export type Customer = z.infer<typeof CustomerShcema>;
+export type Product = z.infer<typeof ProductSchema>;
+export type ShippingAddress = z.infer<typeof ShippingAddressSchema>;
 
 export type Order = {
   id: number;

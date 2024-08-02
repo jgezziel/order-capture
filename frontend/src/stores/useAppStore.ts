@@ -6,13 +6,18 @@ import {
   createShippingAddressSlice,
   type shippingAddressSliceType,
 } from "./shippingAddressSlice";
+import { createOrderSlice, type orderSliceType } from "./orderSlice";
 
 export const useAppStore = create<
-  customersSliceType & productsSliceType & shippingAddressSliceType
+  customersSliceType &
+    productsSliceType &
+    shippingAddressSliceType &
+    orderSliceType
 >()(
   devtools((...a) => ({
     ...createCustomersSlice(...a),
     ...createProductsSlice(...a),
     ...createShippingAddressSlice(...a),
+    ...createOrderSlice(...a),
   }))
 );

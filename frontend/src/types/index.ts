@@ -9,11 +9,19 @@ export type Product = z.infer<typeof ProductSchema>;
 export type ShippingAddress = z.infer<typeof ShippingAddressSchema>;
 
 export type Order = {
-  id: number;
+  id?: number;
   idOrder: string;
+  idCustomer: number;
+  idShippingAddress: number;
+} & PreOrder;
+
+export type PreOrder = {
   idProduct: number;
   quantity: number;
   price: number;
-  idCustomer: number;
-  idShippingAddress: number;
 };
+
+export type CustomerInfoDelivery = Pick<
+  Order,
+  "idCustomer" | "idShippingAddress"
+>;

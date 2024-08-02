@@ -1,10 +1,12 @@
-import type { ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import TableProducts from "../components/TableProducts";
 import { useAppStore } from "../stores/useAppStore";
 
 const Index = () => {
   const customers = useAppStore((state) => state.customers);
   const products = useAppStore((state) => state.products);
+  const preOrder = useAppStore((state) => state.preOrder);
+
   const fetchShippingAddresses = useAppStore(
     (state) => state.fetchShippingAddresses
   );
@@ -15,6 +17,37 @@ const Index = () => {
     fetchShippingAddresses(customerId);
   };
 
+  const [dataCustomer, setDataCustomer] = useState({
+    idCustomer: "",
+    idShippingAddress: "",
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setDataCustomer({
+      ...dataCustomer,
+      [e.target.name]: e.target.value,
+    });
+
+    if (e.target.name === "idCustomer") {
+      handleCustomerChange(e);
+    }
+  };
+
+  const handleOrder = () => {
+    if (!dataCustomer.idCustomer || !dataCustomer.idShippingAddress) {
+      alert("Selecciona un cliente y una dirección de envio");
+      return;
+    }
+    const { idCustomer, idShippingAddress } = dataCustomer;
+    const order = {
+      idCustomer: Number(idCustomer),
+      idShippingAddress: Number(idShippingAddress),
+      preOrder,
+    };
+
+    console.log(order);
+  };
+
   return (
     <>
       <div className="pb-3 mb-6 border-b border-zinc-200">
@@ -23,16 +56,16 @@ const Index = () => {
       <div className="grid gap-6 md:grid-cols-2">
         <div className="flex flex-col mb-6">
           <label
-            htmlFor="customer"
+            htmlFor="idCustomer"
             className="inline-block mb-3 text-xl font-bold"
           >
             Cliente
           </label>
           <select
-            id="customer"
-            name="customer"
+            id="idCustomer"
+            name="idCustomer"
             className="px-4 py-2 transition-all rounded-lg ring-1 ring-zinc-300 focus:outline-none focus:ring-4 focus:ring-offset-1 focus:ring-purple-400 focus:ring-offset-purple-500 placeholder:text-zinc-400"
-            onChange={handleCustomerChange}
+            onChange={handleChange}
           >
             <option hidden>Selecciona una opción</option>
             {customers.map((customer) => (
@@ -44,16 +77,17 @@ const Index = () => {
         </div>
         <div className="flex flex-col mb-6">
           <label
-            htmlFor="deliveryAddress"
+            htmlFor="idShippingAddress"
             className="inline-block mb-3 text-xl font-bold"
           >
             Direccción de envio
           </label>
           <select
-            id="deliveryAddress"
-            name="deliveryAddress"
+            id="idShippingAddress"
+            name="idShippingAddress"
             className="px-4 py-2 transition-all rounded-lg ring-1 ring-zinc-300 focus:outline-none focus:ring-4 focus:ring-offset-1 focus:ring-purple-400 focus:ring-offset-purple-500 placeholder:text-zinc-400 disabled:bg-zinc-300 disabled:text-zinc-500 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={shippingAddresses.length === 0}
+            onChange={handleChange}
           >
             <option hidden>Selecciona una opción</option>
             {shippingAddresses.length === 0 ? (
@@ -68,9 +102,17 @@ const Index = () => {
           </select>
         </div>
       </div>
-      <div className="p-6 border rounded-md bg-zinc-50">
+      <div className="p-6 overflow-x-scroll border rounded-md bg-zinc-50 max-h-[300px] mb-4">
         <TableProducts products={products} />
       </div>
+      <button
+        className="px-4 py-2 mt-3 text-white transition-all bg-purple-500 rounded-md hover:bg-purple-500/90 disabled:bg-zinc-300 disabled:text-zinc-500 disabled:cursor-not-allowed disabled:opacity-50"
+        type="button"
+        onClick={handleOrder}
+        disabled={preOrder.length === 0}
+      >
+        Guardar pedido
+      </button>
     </>
   );
 };

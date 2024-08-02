@@ -17,7 +17,7 @@ const Layout = () => {
     <>
       <div className="grid grid-cols-[250px_1fr] grid-rows-[1fr_auto] h-screen">
         <MenuAside />
-        <main className="p-8 bg-white">
+        <main className="p-8 overflow-y-scroll bg-white">
           <Outlet />
         </main>
       </div>

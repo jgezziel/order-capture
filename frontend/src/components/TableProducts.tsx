@@ -1,5 +1,8 @@
+import { useMemo } from "react";
 import { useAppStore } from "../stores/useAppStore";
 import type { Product } from "../types";
+import { useLocation } from "react-router-dom";
+import { ArchiveBoxIcon } from "@heroicons/react/24/solid";
 
 type ProductsProps = {
   products: Product[];
@@ -10,6 +13,10 @@ const TableProducts = ({ products }: ProductsProps) => {
     const { id, price } = product;
     addStore({ idProduct: id, quantity: 1, price });
   };
+
+  const { pathname } = useLocation();
+
+  const isProducts = useMemo(() => pathname === "/products", [pathname]);
 
   return (
     <>
@@ -25,7 +32,9 @@ const TableProducts = ({ products }: ProductsProps) => {
               <th className="px-4 py-2 text-white border">Descripción</th>
               <th className="px-4 py-2 text-white border">Unidad de medida</th>
               <th className="px-4 py-2 text-white border">Precio</th>
-              <th className="px-4 py-2 text-white border">Acciones</th>
+              {!isProducts && (
+                <th className="px-4 py-2 text-white border">Acciones</th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -36,15 +45,18 @@ const TableProducts = ({ products }: ProductsProps) => {
                 <td className="px-4 py-2 border">{product.description}</td>
                 <td className="px-4 py-2 border">{product.measurementUnit}</td>
                 <td className="px-4 py-2 border">{product.price}</td>
-                <td className="px-4 py-2 border">
-                  <button
-                    className="px-4 py-2 font-bold text-white rounded bg-zinc-800 hover:bg-zinc-700"
-                    type="button"
-                    onClick={() => handleClic(product)}
-                  >
-                    Añadir
-                  </button>
-                </td>
+                {!isProducts && (
+                  <td className="px-4 py-2 text-center border">
+                    <button
+                      className="p-2 font-bold text-white rounded bg-zinc-800 hover:bg-zinc-700"
+                      type="button"
+                      title="Agregar"
+                      onClick={() => handleClic(product)}
+                    >
+                      <ArchiveBoxIcon className="size-6" />
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

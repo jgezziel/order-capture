@@ -1,6 +1,9 @@
+import { v4 as uuidv4 } from "uuid";
 import { useState, type ChangeEvent } from "react";
 import TableProducts from "../components/TableProducts";
 import { useAppStore } from "../stores/useAppStore";
+import { TablePreOrder } from "../components/TablePreOrder";
+import type { Order } from "../types";
 
 const Index = () => {
   const customers = useAppStore((state) => state.customers);
@@ -39,7 +42,8 @@ const Index = () => {
       return;
     }
     const { idCustomer, idShippingAddress } = dataCustomer;
-    const order = {
+    const order: Order = {
+      idOrder: uuidv4(),
       idCustomer: Number(idCustomer),
       idShippingAddress: Number(idShippingAddress),
       preOrder,
@@ -113,6 +117,9 @@ const Index = () => {
       >
         Guardar pedido
       </button>
+      <div className="my-6">
+        <TablePreOrder preOrder={preOrder} products={products} />
+      </div>
     </>
   );
 };

@@ -35,6 +35,16 @@ const MenuAside = () => {
               Productos
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to="/orders"
+              className={({ isActive }) => {
+                return isActive ? "font-bold underline" : "";
+              }}
+            >
+              Pedidos
+            </NavLink>
+          </li>
         </ul>
       </aside>
     </>

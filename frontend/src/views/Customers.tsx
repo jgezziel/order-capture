@@ -19,7 +19,6 @@ const Customers = () => {
               <th className="px-4 py-2 text-white border">Email</th>
               <th className="px-4 py-2 text-white border">Teléfono</th>
               <th className="px-4 py-2 text-white border">Contacto</th>
-              <th className="px-4 py-2 text-white border">Acciones</th>
             </tr>
           </thead>
           <tbody>

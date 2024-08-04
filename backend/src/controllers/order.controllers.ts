@@ -1,5 +1,10 @@
 import type { Request, Response } from "express";
-import { orders, customers, shippingAddresses } from "../db/data";
+import {
+  orders,
+  customers,
+  shippingAddresses,
+  productsOrders,
+} from "../db/data";
 
 export const OrderController = {
   readOrders: async (_req: Request, res: Response) => {
@@ -53,6 +58,37 @@ export const OrderController = {
       code: 200,
       message: "Order retrieved",
       data: orderWithCustomerAndShippingAddress,
+    });
+  },
+  createOrder: async (req: Request, res: Response) => {
+    const { idCustomer, idOrder, idShippingAddress, preOrder } = req.body;
+    const newOrder = {
+      id: orders.length + 1,
+      idCustomer,
+      idOrder,
+      idShippingAddress,
+      dateOrder: new Date().toISOString(),
+      status: "active",
+    };
+
+    orders.push(newOrder);
+
+    let productIdCounter = productsOrders.length + 1;
+    const newProductsOrders = preOrder.map((product: any) => ({
+      id: productIdCounter++,
+      idOrder: newOrder.idOrder,
+      idProduct: product.idProduct,
+      quantity: product.quantity,
+      price: product.price,
+    }));
+
+    productsOrders.push(...newProductsOrders);
+
+    return res.json({
+      status: "success",
+      code: 201,
+      message: "Order created",
+      data: newOrder,
     });
   },
 };

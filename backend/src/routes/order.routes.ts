@@ -5,5 +5,6 @@ const orderRoutes: Router = Router();
 
 orderRoutes.get("/", OrderController.readOrders);
 orderRoutes.get("/:id", OrderController.readOrderID);
+orderRoutes.post("/", OrderController.createOrder);
 
 export default orderRoutes;

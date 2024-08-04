@@ -12,6 +12,20 @@ export const Order = z.object({
   shippingAddress: z.string().optional(),
 });
 
+export const productOrderSchema = z.object({
+  idProduct: z.number(),
+  quantity: z.number(),
+  price: z.number(),
+});
+
+export const PreOrderSchema = z.object({
+  id: z.number().optional(),
+  idOrder: z.string(),
+  idCustomer: z.number(),
+  idShippingAddress: z.number(),
+  preOrder: z.array(productOrderSchema),
+});
+
 export const OrdersAPIResponse = z.object({
   ...bodyResponse.shape,
   data: z.array(Order),

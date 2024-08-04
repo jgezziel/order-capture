@@ -9,6 +9,7 @@ const Index = () => {
   const customers = useAppStore((state) => state.customers);
   const products = useAppStore((state) => state.products);
   const preOrder = useAppStore((state) => state.preOrder);
+  const saveOrder = useAppStore((state) => state.saveOrder);
 
   const fetchShippingAddresses = useAppStore(
     (state) => state.fetchShippingAddresses
@@ -36,7 +37,7 @@ const Index = () => {
     }
   };
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     if (!dataCustomer.idCustomer || !dataCustomer.idShippingAddress) {
       alert("Selecciona un cliente y una dirección de envio");
       return;
@@ -48,8 +49,11 @@ const Index = () => {
       idShippingAddress: Number(idShippingAddress),
       preOrder,
     };
-
-    console.log(order);
+    saveOrder(order);
+    setDataCustomer({
+      idCustomer: "",
+      idShippingAddress: "",
+    });
   };
 
   return (
@@ -70,6 +74,7 @@ const Index = () => {
             name="idCustomer"
             className="px-4 py-2 transition-all rounded-lg ring-1 ring-zinc-300 focus:outline-none focus:ring-4 focus:ring-offset-1 focus:ring-purple-400 focus:ring-offset-purple-500 placeholder:text-zinc-400"
             onChange={handleChange}
+            value={dataCustomer.idCustomer}
           >
             <option hidden>Selecciona una opción</option>
             {customers.map((customer) => (
@@ -92,6 +97,7 @@ const Index = () => {
             className="px-4 py-2 transition-all rounded-lg ring-1 ring-zinc-300 focus:outline-none focus:ring-4 focus:ring-offset-1 focus:ring-purple-400 focus:ring-offset-purple-500 placeholder:text-zinc-400 disabled:bg-zinc-300 disabled:text-zinc-500 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={shippingAddresses.length === 0}
             onChange={handleChange}
+            value={dataCustomer.idShippingAddress}
           >
             <option hidden>Selecciona una opción</option>
             {shippingAddresses.length === 0 ? (
@@ -111,9 +117,9 @@ const Index = () => {
       </div>
       <button
         className="px-4 py-2 mt-3 text-white transition-all bg-purple-500 rounded-md hover:bg-purple-500/90 disabled:bg-zinc-300 disabled:text-zinc-500 disabled:cursor-not-allowed disabled:opacity-50"
-        type="button"
-        onClick={handleOrder}
+        type="submit"
         disabled={preOrder.length === 0}
+        onClick={handleOrder}
       >
         Guardar pedido
       </button>

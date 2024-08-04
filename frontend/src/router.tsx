@@ -11,10 +11,11 @@ import Orders from "./views/Orders";
 import ProductsOrder, {
   loader as readProductsOrderKey,
 } from "./views/ProductsOrder";
+import PageError from "./PageError";
 
 const AppRouter = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Layout />}>
+    <Route path="/" element={<Layout />} errorElement={<PageError />}>
       <Route index element={<Index />} />
       <Route path="customers" element={<Customers />} />
       <Route path="products" element={<Products />} />

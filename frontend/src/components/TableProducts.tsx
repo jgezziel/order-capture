@@ -44,7 +44,7 @@ const TableProducts = ({ products }: ProductsProps) => {
                 <td className="px-4 py-2 border">{product.sku}</td>
                 <td className="px-4 py-2 border">{product.description}</td>
                 <td className="px-4 py-2 border">{product.measurementUnit}</td>
-                <td className="px-4 py-2 border">{product.price}</td>
+                <td className="px-4 py-2 border">$ {product.price}</td>
                 {!isProducts && (
                   <td className="px-4 py-2 text-center border">
                     <button

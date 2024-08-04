@@ -1,6 +1,6 @@
 import type { StateCreator } from "zustand";
-import type { Orders, PreOrder } from "../types";
-import { getOrders } from "../services/OrderService";
+import type { Order, Orders, PreOrder } from "../types";
+import { getOrders, saveOrder } from "../services/OrderService";
 
 export type orderSliceType = {
   orders: Orders[];
@@ -10,6 +10,7 @@ export type orderSliceType = {
   removePreStore: (idProduct: number) => void;
   increaseQuantity: (idProduct: number) => void;
   decreaseQuantity: (idProduct: number) => void;
+  saveOrder: (order: Order) => Promise<void>;
 };
 
 export const createOrderSlice: StateCreator<orderSliceType> = (set) => ({
@@ -71,5 +72,9 @@ export const createOrderSlice: StateCreator<orderSliceType> = (set) => ({
 
       return { preOrder: preOrderList };
     });
+  },
+  saveOrder: async (order: Order) => {
+    await saveOrder(order);
+    set({ preOrder: [] });
   },
 });

@@ -6,7 +6,7 @@ export const Product = z.object({
   sku: z.string(),
   description: z.string(),
   measurementUnit: z.string(),
-  price: z.number(),
+  price: z.string(),
   status: z.string(),
 });
 

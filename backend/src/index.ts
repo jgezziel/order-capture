@@ -7,6 +7,7 @@ const apiURL: string = app.get("apiURL");
 const init = async () => {
   try {
     await db.authenticate();
+    db.sync();
     console.log("✔️ Database connection established");
     app.listen(port, () => {
       console.log(`✔️ Server is listening on: http://localhost:${apiURL}`);

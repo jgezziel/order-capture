@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsnd --respawn src/index.ts",
-    "start": "tsc && node build/index.js",
-    "docker:build": "docker build -t backend ."
+    "start": "tsc && node build/index.js"
   },
   "keywords": [
     "node",
@@ -18,12 +17,16 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "puppeteer-html-pdf": "^4.0.8"
+    "mysql2": "^3.11.0",
+    "puppeteer-html-pdf": "^4.0.8",
+    "sequelize": "^6.37.3",
+    "sequelize-typescript": "^2.1.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/morgan": "^1.9.9",
+    "@types/node": "^22.1.0",
     "morgan": "^1.10.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.4"

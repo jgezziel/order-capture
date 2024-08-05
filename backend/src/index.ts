@@ -1,10 +1,13 @@
 import app from "./app";
+import db from "./db";
 
 const port: string = app.get("port");
 const apiURL: string = app.get("apiURL");
 
-const init = () => {
+const init = async () => {
   try {
+    await db.authenticate();
+    console.log("✔️ Database connection established");
     app.listen(port, () => {
       console.log(`✔️ Server is listening on: http://localhost:${apiURL}`);
     });

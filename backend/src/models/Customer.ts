@@ -6,8 +6,10 @@ import {
   DataType,
   Default,
   DefaultScope,
+  HasMany,
 } from "sequelize-typescript";
 import type { CustomerSchema } from "../schemas/customer.schema";
+import ShippingAddress from "./ShippingAddress";
 
 type CustomerCreationAttributes = Optional<CustomerSchema, "id">;
 
@@ -80,6 +82,9 @@ class Customer extends Model<CustomerSchema, CustomerCreationAttributes> {
     comment: "This is the status of the customer",
   })
   status!: string;
+
+  @HasMany(() => ShippingAddress)
+  shippingAddresses!: ShippingAddress[];
 }
 
 export default Customer;

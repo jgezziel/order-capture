@@ -1,0 +1,54 @@
+services:
+  backend:
+    container_name: cont_api_node
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/api
+      - /api/node_modules
+    networks:
+      - net_api
+  frontend:
+    container_name: cont_web_react
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./frontend:/web
+      - /web/node_modules
+    networks:
+      - net_api
+  db:
+    container_name: cont_db_api
+    image: mysql:8.3.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: jgezziel
+      MYSQL_DATABASE: api_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - net_api
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: cont_phpmyadmin_api
+    restart: always
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: cont_db_api
+    ports:
+      - 8080:80
+    networks:
+      - net_api
+volumes:
+  mysql-data:
+networks:
+  net_api:

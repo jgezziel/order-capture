@@ -6,7 +6,7 @@ export const ProductOrderSchema = z.object({
   idOrder: z.string(),
   idProduct: z.number(),
   quantity: z.number(),
-  price: z.number(),
+  price: z.string(),
 });
 
 export const ProductOrdersAPIResponse = z.object({

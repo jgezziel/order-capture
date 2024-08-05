@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { ProductOrderModel } from "../models/ProductOrder";
 import PuppeteerHTMLPDF from "puppeteer-html-pdf";
 
 import {
@@ -11,32 +12,37 @@ import {
 
 export const ProductsOrderController = {
   readProductsOrders: async (_req: Request, res: Response) => {
+    const productsOrders = await ProductOrderModel.readProductsOrders();
+    if (!productsOrders.success) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        message: productsOrders.message,
+      });
+    }
     return res.json({
       status: "success",
       code: 200,
       message: "Products orders retrieved",
-      data: productsOrders,
+      data: productsOrders.productsOrders,
     });
   },
   readProductsOrderKey: async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const allProductsOrders = productsOrders.filter(
-      (productsOrder) => productsOrder.idOrder === id
-    );
-
-    if (allProductsOrders.length) {
-      return res.json({
-        status: "success",
-        code: 200,
-        message: "Products order retrieved",
-        data: allProductsOrders,
+    const productsOrder = await ProductOrderModel.readProductsOrderKey(id);
+    if (!productsOrder.success) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        message: productsOrder.message,
       });
     }
-    return res.status(404).json({
-      status: "error",
-      code: 404,
-      message: "Products order not found",
+    return res.json({
+      status: "success",
+      code: 200,
+      message: "Products order retrieved",
+      data: productsOrder.productOrder,
     });
   },
   createPDFProductsOrderByKey: async (_req: Request, res: Response) => {
@@ -191,6 +197,23 @@ export const ProductsOrderController = {
   },
   createXMLProductsOrderByKey: async (_req: Request, res: Response) => {
     const { id } = _req.params;
+
+    const xml = await ProductOrderModel.createXMLProductsOrderByKey(id);
+    if (!xml.success) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        message: xml.message,
+      });
+    }
+    return res.json({
+      status: "success",
+      code: 200,
+      message: "XML created",
+      data: xml,
+    });
+
+    /*
     const existId = productsOrders.find(
       (productsOrder) => productsOrder.idOrder === id
     );
@@ -274,6 +297,7 @@ export const ProductsOrderController = {
       `attachment; filename=order-${id}.xml`
     );
     return res.send(xml);
+    */
   },
   createXMLproductIndex: async (_req: Request, res: Response) => {
     const { id, index } = _req.params;

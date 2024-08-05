@@ -1,94 +1,55 @@
 import type { Request, Response } from "express";
-import {
-  orders,
-  customers,
-  shippingAddresses,
-  productsOrders,
-} from "../db/data";
+import { OrderModel } from "../models/Order";
 
 export const OrderController = {
   readOrders: async (_req: Request, res: Response) => {
-    const ordersWithCustomerAndShippingAddress = orders.map((order) => {
-      const { idCustomer, idShippingAddress } = order;
-
-      const customer = customers.find((customer) => customer.id === idCustomer);
-      const shippingAddress = shippingAddresses.find(
-        (shippingAddress) => shippingAddress.id === idShippingAddress
-      );
-
-      return {
-        ...order,
-        customer: customer?.name,
-        shippingAddress: shippingAddress?.address,
-      };
-    });
-
+    const orders = await OrderModel.readOrders();
+    if (!orders.success) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        message: orders.message,
+      });
+    }
     return res.json({
       status: "success",
       code: 200,
       message: "Orders retrieved",
-      data: ordersWithCustomerAndShippingAddress,
+      data: orders.orders,
     });
   },
   readOrderID: async (req: Request, res: Response) => {
     const { id } = req.params;
-    const order = orders.find((order) => order.id === Number(id));
-    const { idCustomer, idShippingAddress } = order || {};
-
-    const customer = customers.find((customer) => customer.id === idCustomer);
-    const shippingAddress = shippingAddresses.find(
-      (shippingAddress) => shippingAddress.id === idShippingAddress
-    );
-
-    const orderWithCustomerAndShippingAddress = {
-      ...order,
-      customer: customer?.name,
-      shippingAddress: shippingAddress?.address,
-    };
-
-    if (!order) {
+    const order = await OrderModel.readOrderID(id);
+    if (!order.success) {
       return res.status(404).json({
         status: "error",
         code: 404,
-        message: "Order not found",
+        message: order.message,
       });
     }
     return res.json({
       status: "success",
       code: 200,
       message: "Order retrieved",
-      data: orderWithCustomerAndShippingAddress,
+      data: order.order,
     });
   },
   createOrder: async (req: Request, res: Response) => {
-    const { idCustomer, idOrder, idShippingAddress, preOrder } = req.body;
-    const newOrder = {
-      id: orders.length + 1,
-      idCustomer,
-      idOrder,
-      idShippingAddress,
-      dateOrder: new Date().toISOString(),
-      status: "active",
-    };
-
-    orders.push(newOrder);
-
-    let productIdCounter = productsOrders.length + 1;
-    const newProductsOrders = preOrder.map((product: any) => ({
-      id: productIdCounter++,
-      idOrder: newOrder.idOrder,
-      idProduct: product.idProduct,
-      quantity: product.quantity,
-      price: product.price,
-    }));
-
-    productsOrders.push(...newProductsOrders);
-
-    return res.json({
+    const data = req.body;
+    const order = await OrderModel.createOrder(data);
+    if (!order.success) {
+      return res.status(400).json({
+        status: "error",
+        code: 400,
+        message: order.message,
+      });
+    }
+    return res.status(201).json({
       status: "success",
       code: 201,
       message: "Order created",
-      data: newOrder,
+      data: order.order,
     });
   },
 };

@@ -206,191 +206,31 @@ export const ProductsOrderController = {
         message: xml.message,
       });
     }
-    return res.json({
-      status: "success",
-      code: 200,
-      message: "XML created",
-      data: xml,
-    });
-
-    /*
-    const existId = productsOrders.find(
-      (productsOrder) => productsOrder.idOrder === id
-    );
-    if (!existId) {
-      return res.status(404).json({
-        status: "error",
-        code: 404,
-        message: "Products order not found",
-      });
-    }
-
-    const productsOrder = productsOrders.filter(
-      (productsOrder) => productsOrder.idOrder === id
-    );
-
-    const dataCompletProductsOrder = productsOrder.map((productOrder) => {
-      const product = products.find(
-        (product) => product.id === productOrder.idProduct
-      );
-      return {
-        ...productOrder,
-        sku: product?.sku,
-        description: product?.description,
-        measurementUnit: product?.measurementUnit,
-      };
-    });
-
-    const orderCustomer = orders.find((order) => order.idOrder === id);
-    const customer = customers.find(
-      (customer) => customer.id === orderCustomer?.idCustomer
-    );
-    const address = shippingAddresses.find(
-      (address) => address.id === orderCustomer?.idShippingAddress
-    );
-
-    const listProdcts = dataCompletProductsOrder;
-
-    const information = {
-      dateOrder: orderCustomer?.dateOrder,
-      customer: customer,
-      address: address,
-      products: listProdcts,
-    };
-
-    const prefixMinorTen = (num: number) => (num < 10 ? `0${num}` : num);
-
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-    <DRDataTransfer>
-    <Customer>
-      <Number>${information.customer?.id}</Number>
-      <Name>${information.customer?.name}</Name>
-      <Addresses>
-        <Address Code="${address?.id}" Description="${
-      address?.NameShort
-    }" PostalCode="${address?.postalCode}" Address1="${address?.address}"/>
-      </Addresses>
-    </Customer>
-    ${listProdcts
-      .map(
-        (productsOrder, ind) => `
-      <Article>
-        <Number>${productsOrder.sku}</Number>
-        <Description>${productsOrder.description}</Description>
-        <SalesPrice>${productsOrder.price}</SalesPrice>
-        </Article>
-      <Order>
-        <Transaction>0</Transaction>
-        <OrderNumber>${id}</OrderNumber>
-        <PartNumber>${prefixMinorTen(ind + 1)}</PartNumber>
-        <OrderedQuantity>${productsOrder.quantity}</OrderedQuantity>
-        <DueDate>${information.dateOrder}</DueDate>
-      </Order>`
-      )
-      .join("")}
-    </DRDataTransfer>
-    `;
 
     res.setHeader("Content-Type", "application/xml");
     res.setHeader(
       "Content-Disposition",
       `attachment; filename=order-${id}.xml`
     );
-    return res.send(xml);
-    */
+    return res.send(xml.xml);
   },
   createXMLproductIndex: async (_req: Request, res: Response) => {
     const { id, index } = _req.params;
 
-    const existId = productsOrders.find(
-      (productsOrder) => productsOrder.idOrder === id
-    );
-    if (!existId) {
+    const xml = await ProductOrderModel.createXMLproductIndex(id, index);
+    if (!xml.success) {
       return res.status(404).json({
         status: "error",
         code: 404,
-        message: "Products order not found",
+        message: xml.message,
       });
     }
 
-    const productsOrder = productsOrders.filter(
-      (productsOrder) => productsOrder.idOrder === id
-    );
-
-    if (Number(index) >= productsOrder.length) {
-      return res.status(404).json({
-        status: "error",
-        code: 404,
-        message: "Product not found",
-      });
-    }
-
-    const dataCompletProductsOrder = productsOrder.map((productOrder) => {
-      const product = products.find(
-        (product) => product.id === productOrder.idProduct
-      );
-      return {
-        ...productOrder,
-        sku: product?.sku,
-        description: product?.description,
-        measurementUnit: product?.measurementUnit,
-      };
-    });
-
-    const orderCustomer = orders.find((order) => order.idOrder === id);
-    const listProdcts = dataCompletProductsOrder;
-    const customer = customers.find(
-      (customer) => customer.id === orderCustomer?.idCustomer
-    );
-    const address = shippingAddresses.find(
-      (address) => address.id === orderCustomer?.idShippingAddress
-    );
-
-    const information = {
-      dateOrder: orderCustomer?.dateOrder,
-      products: listProdcts,
-      customer: customer,
-      address: address,
-    };
-
-    const prefixMinorTen = (num: number) => (num < 10 ? `0${num}` : num);
-
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-    <DRDataTransfer>
-    <Customer>
-     <Number>${information.customer?.id}</Number>
-      <Name>${information.customer?.name}</Name>
-      <Addresses>
-        <Address Code="${address?.id}" Description="${
-      address?.NameShort
-    }" PostalCode="${address?.postalCode}" Address1="${address?.address}"/>
-      </Addresses>
-    </Customer>
-    ${listProdcts
-      .filter((_, ind) => ind === Number(index))
-      .map(
-        (productsOrder) => `
-      <Article>
-        <Number>${productsOrder.sku}</Number>
-        <Description>${productsOrder.description}</Description>
-        <SalesPrice>${productsOrder.price}</SalesPrice>
-        </Article>
-      <Order>
-        <Transaction>0</Transaction>
-        <OrderNumber>${id}</OrderNumber>
-        <PartNumber>${prefixMinorTen(Number(index) + 1)}</PartNumber>
-        <OrderedQuantity>${productsOrder.quantity}</OrderedQuantity>
-        <DueDate>${information.dateOrder}</DueDate>
-      </Order>`
-      )
-      .join("")}
-    </DRDataTransfer>
-    `;
     res.setHeader("Content-Type", "application/xml");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename=order-${id}-part${Number(index) + 1}.xml`
+      `attachment; filename=order-${id}-Part${Number(index) + 1}.xml`
     );
-    return res.send(xml);
+    return res.send(xml.xml);
   },
 };
